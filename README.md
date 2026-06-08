@@ -2,7 +2,7 @@
 
 This repository contains the **100K-OPB Dataset** used in *ORACLE: Knowledge-Efficient Pig Behaviour Recognition via Ontology-Guided Contrastive Learning*. The dataset can be downloaded from: [Download 100K-OPB Dataset](你的数据集下载链接). The collection integrates publicly available pig images and videos and converts visual samples into image-description pairs for ontology-guided contrastive learning.
 
-<img src="1.jpg" alt="Pig behaviour image-description pair construction workflow" width="100%">
+<img src="1.png" alt="Pig behaviour image-description pair construction workflow" width="100%">
 
 ## 1. Overview
 
