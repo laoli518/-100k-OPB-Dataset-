@@ -20,14 +20,13 @@ Core metadata files are:
 train.json
 test.json
 correct_json.py
-prompt.py
 ```
 
 Before using the dataset on a new machine, run `correct_json.py` to convert the paths in `train.json` and `test.json` into absolute paths that match the local storage location.
 
 ## 2. Download and organization of public datasets
 
-The public datasets were downloaded from the corresponding publication repositories, Mendeley Data, GitHub sources, or Roboflow Universe pages. Each source was kept as an independent folder before label normalization. This design keeps the original data provenance traceable.
+The public datasets were downloaded from the corresponding publication repositories, Mendeley Data, GitHub sources, or Roboflow Universe pages. Each source was kept as an independent folder before label preprocess. This design keeps the original data provenance traceable.
 
 ### 2.1 Source-level dataset table
 
@@ -112,22 +111,22 @@ python correct_json.py
 
 This script should be placed under the dataset root folder. It rewrites the sample paths in `train.json` and `test.json` according to the local dataset directory.
 
-### 3.3 Label normalization
+### 3.3 Label preprocess
 
-Original labels from different sources were standardized into **24 normalized categories**. For example, source-specific labels such as `PigLying`, `pigLying`, and `Lying` were mapped to a unified label where appropriate. Case differences and spacing differences were ignored during normalization.
+Original labels from different sources were unified into **24 unified categories**. For example, source-specific labels such as `PigLying`, `pigLying`, and `Lying` were mapped to a unified label where appropriate. Case differences and spacing differences were ignored during unification.
 
-The final normalized labels are listed in Section 2.2. This step is necessary because different public datasets use different annotation conventions for similar pig behaviours.
+The final unified labels are listed in Section 2.2. This step is necessary because different public datasets use different annotation conventions for similar pig behaviours.
 
 ### 3.4 Positive and negative text construction
 
-For each visual sample, the normalized label was used to retrieve behaviour descriptions from `prompt.py`. The prompt file defines text templates or description sets for each behaviour category.
+For each visual sample, the unified label was used to retrieve behaviour descriptions from `prompt.py`. The prompt file defines text templates or description sets for each behaviour category.
 
 The construction logic is:
 
 ```text
 image or video sample
     -> read label from train.json or test.json
-    -> normalize the original label
+    -> unify the original label
     -> retrieve positive and negative descriptions from prompt.py
     -> construct image-description pairs
 ```
@@ -180,9 +179,7 @@ The PB dataset refers to the processed pig-behaviour dataset built from the abov
 1. public image/video samples,
 2. source-specific folders,
 3. train-test metadata in JSON format,
-4. normalized behaviour labels,
-5. prompt-based positive and negative descriptions,
-6. image-description pair records used for vision-language training.
+4. bounding box for each piglet.
 
 ### 4.3 100K-OPB dataset
 
@@ -191,25 +188,15 @@ The 100K-OPB dataset refers to the ontology-guided pig-behaviour dataset constru
 The dataset is intended for models that learn visual behaviour categories through structured language supervision. In this repository, the final training and testing records are stored in:
 
 ```text
-PigBehaviourDataset/train.json
-PigBehaviourDataset/test.json
+train.json
+test.json
 ```
 
-The description templates are stored in:
+The description are stored in oracle project:
 
 ```text
-PigBehaviourDataset/prompt.py
+src/oracle/prompt.py
 ```
-
-Generated pair-level files, if exported by the data-construction script, should be stored under a dedicated processed folder such as:
-
-```text
-PigBehaviourDataset/processed_pairs/
-├── train_pairs.json
-└── test_pairs.json
-```
-
-If pair construction is performed dynamically during model training, `processed_pairs/` is optional and the training script can read `train.json`, `test.json`, and `prompt.py` directly.
 
 ## 5. Usage
 
@@ -218,7 +205,6 @@ If pair construction is performed dynamically during model training, `processed_
 Place `correct_json.py` under the dataset root and run:
 
 ```bash
-cd PigBehaviourDataset
 python correct_json.py
 ```
 
